@@ -30,15 +30,22 @@ const server = net.createServer(connection => {
                         }
                     }
                     break;
+                    case 'COMMAND': {
+                        connection.write("+OK\r\n");
+                    }
+                    break;
+                    default: {
+                        connection.write("-UNKNOWN\r\n")
+                    }
                 }
             },
             returnError: (err) => {
                 console.log('=>', err)
-            }
+            },
         })
         parser.execute(data)
-        // console.log("=>", data.toString())
-        connection.write("+OK\r\n");
+        console.log("=>", data.toString())
+        // connection.write("+OK\r\n");
     })
 
 
