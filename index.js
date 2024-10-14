@@ -26,7 +26,27 @@ const server = net.createServer(connection => {
                         if (!value){
                             connection.write(`$-1\r\n`)
                         }else{
-                            connection.write(`$${value.length}\r\n${value}\r\n`)
+                            if(typeof value === 'number'){
+                                connection.write(`:${value}\r\n`)
+                            }else{
+                                connection.write(`$${value.length}\r\n${value}\r\n`)
+                            }
+                        }
+                    }
+                    break;
+                    case 'INCR': {
+                        const key = reply[1]
+                        var value = store[key]
+                        if(!value){
+                            connection.write('$-1\r\n')
+                        }else{
+                            value++;
+                            if(isNaN(value)){
+                                connection.write('-WRONGTYPE\r\n')
+                            }else{
+                                store[key] = (++store[key]).toString()
+                                connection.write(`$${store[key].length}\r\n${store[key]}\r\n`)
+                            }
                         }
                     }
                     break;
